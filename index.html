@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Esri Leaflet Geocoder</title>
+    <title>Esri Ireland Leaflet Sample</title>
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
 
     <!-- Load Leaflet from their CDN -->
@@ -191,8 +191,13 @@
         }
 
         // Set symbols and popup
-        layerGroup.addLayer(L.marker([nearestFeature.geometry.coordinates[1], nearestFeature.geometry.coordinates[0]]).bindPopup("Address: " + nearestFeature.properties.Depot_address + "<br>" + "Number of sandbags: " + nearestFeature.properties.No_of_Sandbags));     
-        
+        layerGroup.addLayer(L.marker([nearestFeature.geometry.coordinates[1], nearestFeature.geometry.coordinates[0]]).bindPopup("Road Service Sandbags.<br>Address: " + nearestFeature.properties.Depot_address + "<br>Number of sandbags: " + nearestFeature.properties.No_of_Sandbags));
+
+        L.polyline([
+			[nearestFeature.geometry.coordinates[1], nearestFeature.geometry.coordinates[0]],
+			[location.lat, location.lng]
+		]).addTo(map);
+
         nearestDistance = 1000000;
 
         for (var i = 0; i < myRiversAgencySandbag.features.length; i++) {
@@ -206,7 +211,12 @@
         }
 
         // Set symbols and popup
-        layerGroup.addLayer(L.marker([nearestFeature.geometry.coordinates[1], nearestFeature.geometry.coordinates[0]]).bindPopup("Address: " + nearestFeature.properties.Source + ", " + nearestFeature.properties.Location + "<br>" + "Number of sandbags: " + nearestFeature.properties.Capacity));
+        layerGroup.addLayer(L.marker([nearestFeature.geometry.coordinates[1], nearestFeature.geometry.coordinates[0]]).bindPopup("Road Service Sandbags.<br>Address: " + nearestFeature.properties.Source + ", " + nearestFeature.properties.Location + "<br>Number of sandbags: " + nearestFeature.properties.Capacity));
+
+        L.polyline([
+			[nearestFeature.geometry.coordinates[1], nearestFeature.geometry.coordinates[0]],
+			[location.lat, location.lng]
+		]).addTo(map);
     }
 
     function onLocationError(e) {

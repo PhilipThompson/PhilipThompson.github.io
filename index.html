@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet-src.js"></script>
 
+    <!-- Load a small bit of CSS and Javascript specifcally for these demos -->
+    <link rel="stylesheet" href="demo.css" />
+    <script src="demo.js"></script>
+    
+    <!-- Load Esri Leaflet -->
+    <script src="lib/esri-leaflet/esri-leaflet.js"></script>
+
     <!-- Make the map fill the entire page -->
     <style>
       #map {
@@ -29,25 +36,82 @@
 
     <a href="https://github.com/PhilipThompson/PhilipThompson.github.io"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
 
-    <script>
-      var map = L.map('map').setView([45.5165, -122.6764], 12);
+    <div class="demo-controls">
+      <h1 class="title expand" id="title" onclick="showControls();">Show me the sandbags</h1>
+      <div class="control-container hide" id="controlContainer">
+        <p>Enter your address over there, or allow the application to determine your current location by clicking the button below.</p>
+        <input type="button" onclick="geolocateMe();" value="Find Me" />
+        <input type="button" onclick="geolocateMe();" value="Find My Nearest Sandbag" />
+      </div>
+    </div>
 
-      var tiles = L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+    <script>
+        var map = L.map('map').setView([54.66151, -6.7586], 9);
+
+        var tiles = L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+        var dynLayer = L.esri.dynamicMapLayer("http://webservices.spatialni.gov.uk/arcgis/rest/services/Emergency/Sandbag_Locations_RA_RS/MapServer/", {
+            opacity: 0,
+            layers: [0, 1]
+        });
+
+        map.addLayer(dynLayer);
 
       var searchControl = new L.esri.Controls.Geosearch().addTo(map);
 
       var results = new L.LayerGroup().addTo(map);
 
       searchControl.on("results", function(data){
+        
         results.clearLayers();
         for (var i = data.results.length - 1; i >= 0; i--) {
-          results.addLayer(L.marker(data.results[i].latlng));
-        };
+//          results.addLayer(L.marker(data.results[i].latlng));
+
+          identifyLocation(data.results[i].latlng);
+        };     
       });
 
       searchControl.on("error", function(e){
         console.log(e);
-      });
+    });
+
+    function onLocationFound(e) {
+//        var radius = e.accuracy / 2;
+
+//        L.marker(e.latlng).addTo(map)
+//          .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+//        L.circle(e.latlng, radius).addTo(map);
+
+        identifyLocation(e.latlng);
+    }
+
+    function identifyLocation(location) {
+        dynLayer.identify(location, function (data) {
+            if (data.results.length > 0) {
+                //Popup text should be in html format.  Showing the Storm Name with the type
+                popupText = "<b>" + (data.results[0].attributes.Capacity || data.results[0].attributes.Location) + "<b>";
+
+                //Add Popup to the map when the mouse was clicked at
+                var popup = L.popup()
+              .setLatLng(location)
+              .setContent(popupText)
+              .openOn(map);
+            }
+        });
+    }
+
+    function onLocationError(e) {
+        alert(e.message);
+    }
+
+    function geolocateMe() {
+        map.locate({ setView: true, maxZoom: 16 });
+    }
+
+    map.on('locationfound', onLocationFound);
+    map.on('locationerror', onLocationError);
+   
     </script>
   </body>
 </html>

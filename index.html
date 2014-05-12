@@ -144,18 +144,16 @@
       var searchControl = new L.esri.Controls.Geosearch().addTo(map);
 
       var layerGroup = new L.LayerGroup().addTo(map);
-
-//      for (var i = 0; i < mySandbag.features.length; i++) {
-//          var feature = mySandbag.features[i];
-//          // Set symbols and popup
-//          layerGroup.addLayer(L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]]).bindPopup("Address: " + feature.properties.Depot_address + "<br>" + "Number of sandbags: " + feature.properties.No_of_Sandbags));   
-//      }
+      var graphicGroup = new L.LayerGroup().addTo(map);
 
       searchControl.on("results", function (data) {
           for (var i = data.results.length - 1; i >= 0; i--) {
 
               layerGroup.clearLayers();
+              graphicGroup.clearLayers();
               layerGroup.addLayer(L.marker([data.results[i].latlng.lat, data.results[i].latlng.lng]).bindPopup(data.results[i].address)); 
+
+              //L.marker([data.results[i].latlng.lat, data.results[i].latlng.lng]).addTo(map).bindPopup(data.results[i].address).openPopup(); 
 
               identifyLocation(data.results[i].latlng);
               //Only 1
@@ -169,13 +167,15 @@
 
     function onLocationFound(e) {
         layerGroup.clearLayers();
-        layerGroup.addLayer(L.marker([e.latitude, e.longitude]).bindPopup("You are here!"));   
+        graphicGroup.clearLayers();
+        //layerGroup.addLayer(L.marker([e.latitude, e.longitude]).bindPopup("You are here!"));
+
+        L.marker([e.latitude, e.longitude]).addTo(map).bindPopup("You are here!").openPopup();
 
         identifyLocation(e.latlng);
     }
 
-    function identifyLocation(location) {
-        
+    function identifyLocation(location) { 
         // calculate distance to each sandbag
         var nearestFeature;
         var nearestDistance = 1000000;
@@ -193,11 +193,12 @@
         // Set symbols and popup
         layerGroup.addLayer(L.marker([nearestFeature.geometry.coordinates[1], nearestFeature.geometry.coordinates[0]]).bindPopup("Road Service Sandbags.<br>Address: " + nearestFeature.properties.Depot_address + "<br>Number of sandbags: " + nearestFeature.properties.No_of_Sandbags));
 
-        L.polyline([
+        graphicGroup.addLayer(L.polyline([
 			[nearestFeature.geometry.coordinates[1], nearestFeature.geometry.coordinates[0]],
 			[location.lat, location.lng]
-		]).addTo(map);
+		]));
 
+        // rinse and repeat 
         nearestDistance = 1000000;
 
         for (var i = 0; i < myRiversAgencySandbag.features.length; i++) {
@@ -213,10 +214,10 @@
         // Set symbols and popup
         layerGroup.addLayer(L.marker([nearestFeature.geometry.coordinates[1], nearestFeature.geometry.coordinates[0]]).bindPopup("Road Service Sandbags.<br>Address: " + nearestFeature.properties.Source + ", " + nearestFeature.properties.Location + "<br>Number of sandbags: " + nearestFeature.properties.Capacity));
 
-        L.polyline([
+        graphicGroup.addLayer(L.polyline([
 			[nearestFeature.geometry.coordinates[1], nearestFeature.geometry.coordinates[0]],
 			[location.lat, location.lng]
-		]).addTo(map);
+		]));
     }
 
     function onLocationError(e) {
@@ -247,7 +248,6 @@
     map.on('locationfound', onLocationFound);
     map.on('locationerror', onLocationError);
 
- 
     </script>
   </body>
 </html>

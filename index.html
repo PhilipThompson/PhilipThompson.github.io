@@ -40,12 +40,96 @@
       <h1 class="title expand" id="title" onclick="showControls();">Show me the sandbags</h1>
       <div class="control-container hide" id="controlContainer">
         <p>Enter your address over there, or allow the application to determine your current location by clicking the button below.</p>
-        <input type="button" onclick="geolocateMe();" value="Find Me" />
         <input type="button" onclick="geolocateMe();" value="Find My Nearest Sandbag" />
       </div>
     </div>
 
     <script>
+        // Don't have the time to retrieve from the proper endpoint. Using data from http://open.esriireland.opendata.arcgis.com/datasets/54a5ff9ae38b48f0a70a89844c6d8ed3_0.geojson
+        var sandbags = '{"type": "FeatureCollection","features": [' +
+'{ "type": "Feature", "properties": { "OBJECTID": 1, "Status": "M", "Score": 100, "Match_type": "PP", "X": 318402.86421, "Y": 386989.220305, "Match_addr": " ", "ARC_House": "160", "ARC_Post_C": "BT41 4AE", "Division": "Northern", "Section": "Antrim", "Depot": "Rathmore", "Depot_address": "6 Loughanmore Road, Antrim, BT41 2QP", "No_of_Sandbags": 300.0 }, "geometry": { "type": "Point", "coordinates": [ -6.163453138813701, 54.716969976180572 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 2, "Status": "M", "Score": 100, "Match_type": "PP", "X": 312203.84209, "Y": 402003.12814, "Match_addr": " ", "ARC_House": "109", "ARC_Post_C": "BT42 3HA", "Division": "Northern", "Section": "Ballymena", "Depot": "Ballykeel", "Depot_address": "190 Larne road Link, BALLYMENA, BT42 3HA", "No_of_Sandbags": 1000.0 }, "geometry": { "type": "Point", "coordinates": [ -6.253796311879725, 54.853192453170692 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 3, "Status": "M", "Score": 100, "Match_type": "PP", "X": 336411.4462, "Y": 400211.20741, "Match_addr": " ", "ARC_House": "81", "ARC_Post_C": "BT40 2PH", "Division": "Northern", "Section": "Larne", "Depot": "Kilwaugther", "Depot_address": "81 Belfast Road, Larne, BT40 2PJ", "No_of_Sandbags": 300.0 }, "geometry": { "type": "Point", "coordinates": [ -5.877996161688793, 54.83110527102918 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 4, "Status": "M", "Score": 100, "Match_type": "PP", "X": 294815.9517, "Y": 426222.97845, "Match_addr": " ", "ARC_House": "28", "ARC_Post_C": "BT53 6EE", "Division": "Northern", "Section": "Ballymoney & Moyle", "Depot": "Ballymoney", "Depot_address": "28 Market Street, Ballymoney, BT53 6EB", "No_of_Sandbags": 300.0 }, "geometry": { "type": "Point", "coordinates": [ -6.516418234123051, 55.074264695900958 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 5, "Status": "M", "Score": 100, "Match_type": "A", "X": 286346.0, "Y": 431913.0, "Match_addr": "17, BT52 2JB", "ARC_House": "17", "ARC_Post_C": "BT52 2JB", "Division": "Northern", "Section": "Coleraine", "Depot": "Northbrook", "Depot_address": "17 Newmills Road, COLERAINE, BT52 2JB", "No_of_Sandbags": 300.0 }, "geometry": { "type": "Point", "coordinates": [ -6.647249836576593, 55.126902727639639 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 6, "Status": "M", "Score": 100, "Match_type": "A", "X": 267722.0, "Y": 425200.0, "Match_addr": "77, BT49 0HR", "ARC_House": "77", "ARC_Post_C": "BT49 0HR", "Division": "Northern", "Section": "Limavady", "Depot": "Aghanloo", "Depot_address": "77 Dowlands Road, LIMAVADY, BT49 0HR", "No_of_Sandbags": 300.0 }, "geometry": { "type": "Point", "coordinates": [ -6.940727438003078, 55.06950554491501 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 7, "Status": "M", "Score": 100, "Match_type": "PP", "X": 244849.831462, "Y": 415943.03483, "Match_addr": " ", "ARC_House": "1A", "ARC_Post_C": "BT47 2NQ", "Division": "Northern", "Section": "Londonderry", "Depot": "Woodburn", "Depot_address": "1A Crescent Road, LONDONDERRY, BT47 2NQ", "No_of_Sandbags": 500.0 }, "geometry": { "type": "Point", "coordinates": [ -7.300161330285523, 54.988949813269642 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 8, "Status": "M", "Score": 100, "Match_type": "A", "X": 288914.0, "Y": 344778.0, "Match_addr": "17, BT60 1JD", "ARC_House": "17", "ARC_Post_C": "BT60 1JD", "Division": "Southern", "Section": "Armagh", "Depot": "Ballynahonemore", "Depot_address": "17 Ballynahonemore Road, ARMAGH, BT60 1JD", "No_of_Sandbags": 2500.0 }, "geometry": { "type": "Point", "coordinates": [ -6.633600420484006, 54.343957385277733 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 9, "Status": "M", "Score": 100, "Match_type": "A", "X": 317012.0, "Y": 344777.0, "Match_addr": "15, BT32 3RU", "ARC_House": "15", "ARC_Post_C": " BT32 3RU", "Division": "Southern", "Section": "Banbridge", "Depot": "Corbet", "Depot_address": "15 Aughnacloy Road, BANBRIDGE, BT32 3RU", "No_of_Sandbags": 1400.0 }, "geometry": { "type": "Point", "coordinates": [ -6.201762929259869, 54.338285234455313 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 10, "Status": "M", "Score": 100, "Match_type": "PP", "X": 302879.537871, "Y": 357213.123732, "Match_addr": " ", "ARC_House": " ", "ARC_Post_C": " BT63 5RH", "Division": "Southern", "Section": "Craigavon", "Depot": "Carn", "Depot_address": "18 Carn Industrial Estate, CRAIGAVON, BT63 5RH", "No_of_Sandbags": 2700.0 }, "geometry": { "type": "Point", "coordinates": [ -6.414644835288255, 54.453001927090888 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 11, "Status": "M", "Score": 100, "Match_type": "A", "X": 340550.0, "Y": 345472.0, "Match_addr": "131, BT30 8PR", "ARC_House": "131", "ARC_Post_C": "BT30 8PR", "Division": "Southern", "Section": "Down", "Depot": "Castlenavan", "Depot_address": "131 Newcastle Road, SEAFORDE, BT30 8PR", "No_of_Sandbags": 1200.0 }, "geometry": { "type": "Point", "coordinates": [ -5.839809454436804, 54.338591557604154 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 12, "Status": "M", "Score": 100, "Match_type": "M", "X": 308236.0, "Y": 326814.0, "Match_addr": "1, BT35 6AU", "ARC_House": "1", "ARC_Post_C": "BT35 6AU", "Division": "Southern", "Section": "Newry", "Depot": "Newry", "Depot_address": "1 Cecil Street, NEWRY, BT35 6AU", "No_of_Sandbags": 2000.0 }, "geometry": { "type": "Point", "coordinates": [ -6.343106283765798, 54.178916349245583 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 13, "Status": "M", "Score": 100, "Match_type": "A", "X": 336045.0, "Y": 374918.0, "Match_addr": "1A, BT3 9DY", "ARC_House": "1a", "ARC_Post_C": "BT3 9DY", "Division": "Eastern", "Section": "Castlereagh & Belfast South", "Depot": "Airport Road", "Depot_address": "1a Airport Road, BELFAST, BT3 9DY", "No_of_Sandbags": 2500.0 }, "geometry": { "type": "Point", "coordinates": [ -5.895492533077777, 54.604153731654115 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 14, "Status": "M", "Score": 100, "Match_type": "PP", "X": 330182.08241, "Y": 383277.115371, "Match_addr": " ", "ARC_House": "543", "ARC_Post_C": "BT36 8RF", "Division": "Eastern", "Section": "Belfast North & Newtownabbey & Carrickfergus", "Depot": "Sandyknowes", "Depot_address": "543 Antrim Road, Newtownabbey, BT36 4RF", "No_of_Sandbags": 10000.0 }, "geometry": { "type": "Point", "coordinates": [ -5.982443151074685, 54.680739542973086 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 15, "Status": "M", "Score": 100, "Match_type": "PP", "X": 350364.253274, "Y": 379394.05704, "Match_addr": " ", "ARC_House": "72", "ARC_Post_C": "BT19 2PG", "Division": "Eastern", "Section": "North Down & Ards", "Depot": "Balloo", "Depot_address": "72 Balloo Road, BANGOR, BT19 7PG", "No_of_Sandbags": 1000.0 }, "geometry": { "type": "Point", "coordinates": [ -5.671802243322727, 54.640276094731405 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 16, "Status": "M", "Score": 100, "Match_type": "PP", "X": 325727.76044699997874, "Y": 362255.0945, "Match_addr": " ", "ARC_House": " ", "ARC_Post_C": " BT27 5QY", "Division": "Eastern", "Section": "Lisburn", "Depot": "Sprucefield", "Depot_address": "Hillsborough Road, Sprucefield, LISBURN, BT27 5RJ", "No_of_Sandbags": 2000.0 }, "geometry": { "type": "Point", "coordinates": [ -6.060447512302198, 54.493136186010432 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 17, "Status": "M", "Score": 100, "Match_type": "PP", "X": 248368.8745, "Y": 372179.98116199998185, "Match_addr": " ", "ARC_House": "32", "ARC_Post_C": "BT79 0JJ", "Division": "Western", "Section": "Omagh", "Depot": "Arvalee", "Depot_address": "32 Deverney Road, ARVALEE, OMAGH, BT79 0ND", "No_of_Sandbags": 1000.0 }, "geometry": { "type": "Point", "coordinates": [ -7.252480727411634, 54.595542576106553 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 18, "Status": "M", "Score": 100, "Match_type": "A", "X": 245964.0, "Y": 348246.0, "Match_addr": "9, BT75 0LF", "ARC_House": "9", "ARC_Post_C": "BT75 0LF", "Division": "Western", "Section": "Dungannon", "Depot": "Ballyvadden", "Depot_address": "9 Screeby Road, FIVEMILETOWN, BT75 0LF", "No_of_Sandbags": 750.0 }, "geometry": { "type": "Point", "coordinates": [ -7.293399422773358, 54.380779299132229 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 19, "Status": "M", "Score": 100, "Match_type": "M", "X": 289730.0, "Y": 391225.0, "Match_addr": "30, BT45 5DN", "ARC_House": "30", "ARC_Post_C": "BT45 5DN", "Division": "Western", "Section": "Cookstown & Magherafelt", "Depot": "Magherafelt", "Depot_address": "30 Station Road, Magherafelt, BT45 5DN", "No_of_Sandbags": 600.0 }, "geometry": { "type": "Point", "coordinates": [ -6.606913144755391, 54.760930765643835 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 20, "Status": "M", "Score": 100, "Match_type": "PP", "X": 219038.33315, "Y": 362171.74124, "Match_addr": " ", "ARC_House": " ", "ARC_Post_C": "BT93 1TL", "Division": "Western", "Section": "Fermanagh", "Depot": "Kesh", "Depot_address": "Manoo Road, Kesh, BT93 1TL", "No_of_Sandbags": 100.0 }, "geometry": { "type": "Point", "coordinates": [ -7.706877435813754, 54.507590181711031 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 21, "Status": "M", "Score": 100, "Match_type": "PP", "X": 221650.3623399999924, "Y": 345578.165623, "Match_addr": " ", "ARC_House": "53", "ARC_Post_C": " BT74 7EF", "Division": "Western", "Section": "Fermanagh", "Depot": "Silverhill", "Depot_address": "53a Loughshore Road, ENNISKILLEN, BT74 5NH", "No_of_Sandbags": 1700.0 }, "geometry": { "type": "Point", "coordinates": [ -7.667763707366793, 54.358423462333526 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 22, "Status": "M", "Score": 100, "Match_type": "PP", "X": 234098.818617, "Y": 395744.63542, "Match_addr": " ", "ARC_House": " ", "ARC_Post_C": "BT82 8DX", "Division": "Western", "Section": "Strabane", "Depot": "Strabane", "Depot_address": "Dublin Road Industrial Estate, STRABANE, BT82 9JY", "No_of_Sandbags": 500.0 }, "geometry": { "type": "Point", "coordinates": [ -7.470485703688796, 54.808373903793679 ] } }]}';
+
+        var mySandbag = JSON.parse(sandbags);
+
+        //http://open.esriireland.opendata.arcgis.com/datasets/54a5ff9ae38b48f0a70a89844c6d8ed3_1.geojson
+        var riversAgencySandbags = '{"type": "FeatureCollection","features": [' +
+'{ "type": "Feature", "properties": { "OBJECTID": 1, "Source": "Rivers Agency, GBA Office", "Location": "Middle Road, Carrickfergus", "Comments": " ", "Capacity": 300 }, "geometry": { "type": "Point", "coordinates": [ -5.817668288963659, 54.735152576418621 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 2, "Source": "Rivers Agency, GBA Office", "Location": "M2 Off Slip", "Comments": " ", "Capacity": 50 }, "geometry": { "type": "Point", "coordinates": [ -5.918140478141537, 54.645588697793542 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 3, "Source": "Rivers Agency, GBA Office", "Location": "Townsend Street, Belfast", "Comments": " ", "Capacity": 500 }, "geometry": { "type": "Point", "coordinates": [ -5.94079695084621, 54.601339106594828 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 4, "Source": "Rivers Agency, GBA Office", "Location": "Holywood", "Comments": " ", "Capacity": 200 }, "geometry": { "type": "Point", "coordinates": [ -5.83740983339404, 54.636185938746941 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 5, "Source": "Rivers Agency, GBA Office", "Location": "Craigantlet", "Comments": " ", "Capacity": 500 }, "geometry": { "type": "Point", "coordinates": [ -5.784579530469013, 54.638087963513463 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 6, "Source": "Rivers Agency, GBA Office", "Location": "Floodgates, Ards", "Comments": " ", "Capacity": 250 }, "geometry": { "type": "Point", "coordinates": [ -5.680136135780207, 54.583494855026323 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 7, "Source": "Rivers Agency, Omagh Office", "Location": "Castlederg", "Comments": " ", "Capacity": 1000 }, "geometry": { "type": "Point", "coordinates": [ -7.592653413484243, 54.705240186305268 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 8, "Source": "Rivers Agency, Omagh Office", "Location": "Sion Mills", "Comments": " ", "Capacity": 1000 }, "geometry": { "type": "Point", "coordinates": [ -7.474154333690876, 54.802293770605331 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 9, "Source": "Rivers Agency, Omagh Office", "Location": "Donemana", "Comments": "at Council recycling facilities", "Capacity": 1000 }, "geometry": { "type": "Point", "coordinates": [ -7.315366305562362, 54.872781180365529 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 10, "Source": "Rivers Agency, Omagh Office", "Location": "Newtownstewart", "Comments": "at Council recycling facilities", "Capacity": 1000 }, "geometry": { "type": "Point", "coordinates": [ -7.37149674874355, 54.721003736434902 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 11, "Source": "Rivers Agency, Omagh Office", "Location": "Loughry", "Comments": " ", "Capacity": 1000 }, "geometry": { "type": "Point", "coordinates": [ -6.734970162931885, 54.615272055297361 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 12, "Source": "Rivers Agency, Omagh Office", "Location": "Beragh", "Comments": " ", "Capacity": 1700 }, "geometry": { "type": "Point", "coordinates": [ -7.157293904476972, 54.550171252349045 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 13, "Source": "Rivers Agency, Omagh Office", "Location": "Omagh", "Comments": " ", "Capacity": 1500 }, "geometry": { "type": "Point", "coordinates": [ -7.296753166648385, 54.605617748075694 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 14, "Source": "Rivers Agency, Omagh Office", "Location": "Omagh", "Comments": " ", "Capacity": 1500 }, "geometry": { "type": "Point", "coordinates": [ -7.29704591277583, 54.607487963114053 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 15, "Source": "Rivers Agency, Lisburn Office", "Location": "Ravarnet House, Lisburn", "Comments": " ", "Capacity": 2000 }, "geometry": { "type": "Point", "coordinates": [ -6.044882052999124, 54.499353666120719 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 16, "Source": "Rivers Agency, Lisburn Office", "Location": "Cushendall", "Comments": " 300 additional sandbags for March 2013 snow", "Capacity": 600 }, "geometry": { "type": "Point", "coordinates": [ -6.088958558130959, 55.081934553937707 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 17, "Source": "Rivers Agency, Lisburn Office", "Location": "Galgorm", "Comments": " ", "Capacity": 600 }, "geometry": { "type": "Point", "coordinates": [ -6.33314127734226, 54.863101798145948 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 18, "Source": "Rivers Agency, Lisburn Office", "Location": "Larne", "Comments": "200 additional sandbags for March 2013 snow", "Capacity": 800 }, "geometry": { "type": "Point", "coordinates": [ -5.804886597603977, 54.846514920999702 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 19, "Source": "Rivers Agency, Lisburn Office", "Location": "Parkgate", "Comments": " ", "Capacity": 500 }, "geometry": { "type": "Point", "coordinates": [ -6.109134600815617, 54.719268310083208 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 20, "Source": "Rivers Agency, Lisburn Office", "Location": "Newcastle", "Comments": " ", "Capacity": 1000 }, "geometry": { "type": "Point", "coordinates": [ -5.895109100368813, 54.205425404077495 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 21, "Source": "Rivers Agency, Lisburn Office", "Location": "Quoile (Killinchy)", "Comments": " ", "Capacity": 400 }, "geometry": { "type": "Point", "coordinates": [ -5.685182155129016, 54.372052645217543 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 22, "Source": "Rivers Agency, Lisburn Office", "Location": "Cloughey", "Comments": " ", "Capacity": 400 }, "geometry": { "type": "Point", "coordinates": [ -5.472151182522919, 54.436494654270788 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 23, "Source": "Rivers Agency, Lisburn Office", "Location": "Annesborough", "Comments": " ", "Capacity": 400 }, "geometry": { "type": "Point", "coordinates": [ -5.918493445764104, 54.26312307083488 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 24, "Source": "Rivers Agency, Lisburn Office", "Location": "Rostrevor", "Comments": " ", "Capacity": 400 }, "geometry": { "type": "Point", "coordinates": [ -6.201095478940506, 54.101457638441822 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 25, "Source": "Rivers Agency, Lisburn Office", "Location": "Kilbroney", "Comments": " ", "Capacity": 400 }, "geometry": { "type": "Point", "coordinates": [ -6.189721582824452, 54.094422355264236 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 26, "Source": "Ards Borough Council", "Location": "North Road Depot, Newtownards", "Comments": "Pre-Filled bags", "Capacity": 1000 }, "geometry": { "type": "Point", "coordinates": [ -5.691308326963163, 54.602586981856859 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 27, "Source": "North Down Borough Council", "Location": "Old NIE Building, Bangor", "Comments": "Pre-Filled Aqua-sac", "Capacity": 200 }, "geometry": { "type": "Point", "coordinates": [ -5.665523715187669, 54.638258745799092 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 28, "Source": "Rivers Agency, Armagh Office", "Location": "Church of Ireland, Banbridge", "Comments": " ", "Capacity": 500 }, "geometry": { "type": "Point", "coordinates": [ -6.267771363200166, 54.352698941005421 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 29, "Source": "Rivers Agency, Armagh Office", "Location": "Mill Road, Aughnacloy", "Comments": " ", "Capacity": 500 }, "geometry": { "type": "Point", "coordinates": [ -6.972189261161913, 54.41296704942237 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 30, "Source": "Rivers Agency, Armagh Office", "Location": "Roads Service Depot, Armagh", "Comments": " ", "Capacity": 1000 }, "geometry": { "type": "Point", "coordinates": [ -6.633310561553936, 54.344113103888496 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 31, "Source": "Rivers Agency, Armagh Office", "Location": "Belfast Road, Newry", "Comments": " ", "Capacity": 4000 }, "geometry": { "type": "Point", "coordinates": [ -6.328184551684964, 54.201450049949038 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 32, "Source": "Rivers Agency, Coleraine Office", "Location": "Coleraine Yard", "Comments": " ", "Capacity": 1800 }, "geometry": { "type": "Point", "coordinates": [ -6.663470122067653, 55.112245875517317 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 33, "Source": "Rivers Agency, Coleraine Office", "Location": "Portna, Kilrea", "Comments": " ", "Capacity": 400 }, "geometry": { "type": "Point", "coordinates": [ -6.536778652037346, 54.949782778097379 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 34, "Source": "Rivers Agency, Coleraine Office", "Location": "Limavady", "Comments": " ", "Capacity": 300 }, "geometry": { "type": "Point", "coordinates": [ -6.94402699327211, 55.076172531042275 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 35, "Source": "Rivers Agency, Coleraine Office", "Location": "Derry City Store", "Comments": " ", "Capacity": 1500 }, "geometry": { "type": "Point", "coordinates": [ -7.337257067047171, 55.014832849854329 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 36, "Source": "Rivers Agency, Coleraine Office", "Location": "Longfield Sea Defence", "Comments": " ", "Capacity": 400 }, "geometry": { "type": "Point", "coordinates": [ -7.164307553035428, 55.059582068941808 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 37, "Source": "Rivers Agency, Fermanagh Office", "Location": "Riversdale", "Comments": " ", "Capacity": 2000 }, "geometry": { "type": "Point", "coordinates": [ -7.636791258047082, 54.415934374236286 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 38, "Source": "Rivers Agency, GBA Office", "Location": "Hydebank", "Comments": " ", "Capacity": 200 }, "geometry": { "type": "Point", "coordinates": [ -5.927393459730313, 54.542996461466359 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 39, "Source": "Rivers Agency, Armagh Office", "Location": "Coalisland", "Comments": " ", "Capacity": 600 }, "geometry": { "type": "Point", "coordinates": [ -6.633809566789804, 54.539563590323567 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 40, "Source": "Rivers Agency, GBA Office", "Location": "Dixon Park", "Comments": " ", "Capacity": 800 }, "geometry": { "type": "Point", "coordinates": [ -5.885535680057498, 54.588055401149255 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 41, "Source": "Rivers Agency, GBA Office", "Location": "Park Centre \/ Clowney Grille", "Comments": " ", "Capacity": 400 }, "geometry": { "type": "Point", "coordinates": [ -5.959658020858075, 54.588646255695785 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 42, "Source": "Rivers Agency, GBA Office", "Location": "Avoniel Leisure Centre", "Comments": " ", "Capacity": 400 }, "geometry": { "type": "Point", "coordinates": [ -5.896321401173273, 54.595037594725312 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 43, "Source": "Rivers Agency, GBA Office", "Location": "Orangefield Park 1", "Comments": " ", "Capacity": 100 }, "geometry": { "type": "Point", "coordinates": [ -5.880688509289248, 54.588588811866245 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 44, "Source": "Rivers Agency, GBA Office", "Location": "Orangefield Park 2", "Comments": " ", "Capacity": 100 }, "geometry": { "type": "Point", "coordinates": [ -5.879668768040855, 54.588991728489418 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 45, "Source": "Rivers Agency, GBA Office", "Location": "Clarawood 1", "Comments": " ", "Capacity": 100 }, "geometry": { "type": "Point", "coordinates": [ -5.870608003947128, 54.589222486534716 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 46, "Source": "Rivers Agency, GBA Office", "Location": "Clarawood 2", "Comments": " ", "Capacity": 100 }, "geometry": { "type": "Point", "coordinates": [ -5.87056277005481, 54.588716512145837 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 47, "Source": "Rivers Agency, GBA Office", "Location": "Clarawood 3", "Comments": " ", "Capacity": 100 }, "geometry": { "type": "Point", "coordinates": [ -5.869476820314333, 54.588738997918718 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 48, "Source": "Rivers Agency, GBA Office", "Location": "Clarawood 4", "Comments": " ", "Capacity": 100 }, "geometry": { "type": "Point", "coordinates": [ -5.869339585480602, 54.588133339622082 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 49, "Source": "Rivers Agency, Lisburn Office", "Location": "Newtownards Sea Defence", "Comments": " ", "Capacity": 400 }, "geometry": { "type": "Point", "coordinates": [ -5.67996544277527, 54.583506563149257 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 50, "Source": "Rivers Agency, Lisburn Office", "Location": "Crumlin Glen", "Comments": " ", "Capacity": 500 }, "geometry": { "type": "Point", "coordinates": [ -6.214326475442323, 54.62329220117244 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 51, "Source": "Rivers Agency, Lisburn Office", "Location": "Castlewellan Forest Park", "Comments": " ", "Capacity": 300 }, "geometry": { "type": "Point", "coordinates": [ -5.951861748021532, 54.260812542307015 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 52, "Source": "Rivers Agency, Armagh Office", "Location": "Craigavon Yard", "Comments": " ", "Capacity": 4000 }, "geometry": { "type": "Point", "coordinates": [ -6.429973013081371, 54.441312746396093 ] } },' +
+'{ "type": "Feature", "properties": { "OBJECTID": 53, "Source": "Rivers Agency, Armagh Office", "Location": "City Hotel, Armagh", "Comments": " ", "Capacity": 400 }, "geometry": { "type": "Point", "coordinates": [ -6.651223845171787, 54.344078434137991 ] }} ]}';
+
+        var myRiversAgencySandbag = JSON.parse(riversAgencySandbags);
+
         var map = L.map('map').setView([54.66151, -6.7586], 9);
 
         var tiles = L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
@@ -59,16 +143,24 @@
 
       var searchControl = new L.esri.Controls.Geosearch().addTo(map);
 
-      var results = new L.LayerGroup().addTo(map);
+      var layerGroup = new L.LayerGroup().addTo(map);
 
-      searchControl.on("results", function(data){
-        
-        results.clearLayers();
-        for (var i = data.results.length - 1; i >= 0; i--) {
-//          results.addLayer(L.marker(data.results[i].latlng));
+//      for (var i = 0; i < mySandbag.features.length; i++) {
+//          var feature = mySandbag.features[i];
+//          // Set symbols and popup
+//          layerGroup.addLayer(L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]]).bindPopup("Address: " + feature.properties.Depot_address + "<br>" + "Number of sandbags: " + feature.properties.No_of_Sandbags));   
+//      }
 
-          identifyLocation(data.results[i].latlng);
-        };     
+      searchControl.on("results", function (data) {
+          for (var i = data.results.length - 1; i >= 0; i--) {
+
+              layerGroup.clearLayers();
+              layerGroup.addLayer(L.marker([data.results[i].latlng.lat, data.results[i].latlng.lng]).bindPopup(data.results[i].address)); 
+
+              identifyLocation(data.results[i].latlng);
+              //Only 1
+              break;
+          };
       });
 
       searchControl.on("error", function(e){
@@ -76,29 +168,45 @@
     });
 
     function onLocationFound(e) {
-//        var radius = e.accuracy / 2;
-
-//        L.marker(e.latlng).addTo(map)
-//          .bindPopup("You are within " + radius + " meters from this point").openPopup();
-
-//        L.circle(e.latlng, radius).addTo(map);
+        layerGroup.clearLayers();
+        layerGroup.addLayer(L.marker([e.latitude, e.longitude]).bindPopup("You are here!"));   
 
         identifyLocation(e.latlng);
     }
 
     function identifyLocation(location) {
-        dynLayer.identify(location, function (data) {
-            if (data.results.length > 0) {
-                //Popup text should be in html format.  Showing the Storm Name with the type
-                popupText = "<b>" + (data.results[0].attributes.Capacity || data.results[0].attributes.Location) + "<b>";
+        
+        // calculate distance to each sandbag
+        var nearestFeature;
+        var nearestDistance = 1000000;
 
-                //Add Popup to the map when the mouse was clicked at
-                var popup = L.popup()
-              .setLatLng(location)
-              .setContent(popupText)
-              .openOn(map);
+        for (var i = 0; i < mySandbag.features.length; i++) {
+            var feature = mySandbag.features[i];
+            var distance = getDistanceFromLatLonInKm(feature.geometry.coordinates[1], feature.geometry.coordinates[0], location.lat, location.lng);
+
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearestFeature = feature;
             }
-        });
+        }
+
+        // Set symbols and popup
+        layerGroup.addLayer(L.marker([nearestFeature.geometry.coordinates[1], nearestFeature.geometry.coordinates[0]]).bindPopup("Address: " + nearestFeature.properties.Depot_address + "<br>" + "Number of sandbags: " + nearestFeature.properties.No_of_Sandbags));     
+        
+        nearestDistance = 1000000;
+
+        for (var i = 0; i < myRiversAgencySandbag.features.length; i++) {
+            var feature = myRiversAgencySandbag.features[i];
+            var distance = getDistanceFromLatLonInKm(feature.geometry.coordinates[1], feature.geometry.coordinates[0], location.lat, location.lng);
+
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearestFeature = feature;
+            }
+        }
+
+        // Set symbols and popup
+        layerGroup.addLayer(L.marker([nearestFeature.geometry.coordinates[1], nearestFeature.geometry.coordinates[0]]).bindPopup("Address: " + nearestFeature.properties.Source + ", " + nearestFeature.properties.Location + "<br>" + "Number of sandbags: " + nearestFeature.properties.Capacity));
     }
 
     function onLocationError(e) {
@@ -109,9 +217,27 @@
         map.locate({ setView: true, maxZoom: 16 });
     }
 
+    function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+        var R = 6371; // Radius of the earth in km
+        var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+        var dLon = deg2rad(lon2 - lon1);
+        var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c; // Distance in km
+        return d;
+    }
+
+    function deg2rad(deg) {
+        return deg * (Math.PI / 180)
+    }
+
     map.on('locationfound', onLocationFound);
     map.on('locationerror', onLocationError);
-   
+
+ 
     </script>
   </body>
 </html>
